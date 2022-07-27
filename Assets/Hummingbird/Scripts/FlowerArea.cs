@@ -112,7 +112,7 @@ public class FlowerArea : MonoBehaviour
         // Finds all flowers that are children of this GameObject/Transform
         FindChildFlowers(transform);
         FindChildBirds(transform);
-        //FindChildHunters(transform);
+        FindChildHunters(transform);
     }
 
 

@@ -88,8 +88,8 @@ public class HummingBirdAgent : Agent
         {
             // Only reset flowers in training when there is one agent per area
             flowerArea.ResetFlowers();
-            //flowerArea.ResetHummingBirds();
-            //flowerArea.ResetHunterAgents();
+            flowerArea.ResetHummingBirds();
+            flowerArea.ResetHunterAgents();
         }
 
         // Reset the nectar Obtained
@@ -202,6 +202,7 @@ public class HummingBirdAgent : Agent
     
     public override void Heuristic(in ActionBuffers actionsOut)
     {
+        /** Currently disabled for debugging purposes
         ActionSegment<float> continuousActions = actionsOut.ContinuousActions;
 
         // Create placeholders for all movement/turning
@@ -239,6 +240,7 @@ public class HummingBirdAgent : Agent
         continuousActions[2] = combined.z;
         continuousActions[3] = pitch;
         continuousActions[4] = yaw;
+        **/
     }
 
     /// <summary>

@@ -299,10 +299,11 @@ public class HunterAgent : Agent
     /// </summary>
     private void Update()
     {
+        UpdateNearestHummingBird();
         // Draw a line from the center of the hunter to the nearest humming bird
         if (nearestHummingBirdAgent != null)
         {
-            Debug.DrawLine(rigidBody.position, nearestHummingBirdAgent.beakTip.position, Color.black);
+            Debug.DrawLine(rigidBody.position, nearestHummingBirdAgent.beakTip.position, Color.red);
         }
     }
 
@@ -374,6 +375,7 @@ public class HunterAgent : Agent
                     other.gameObject.SetActive(false);
                     AddReward(.5f);
                     Debug.Log("Eliminated Bird : " + eliminateCount);
+                    UpdateNearestHummingBird();
                 }
                 hummingBirdCollision[other.gameObject] = (int)(hummingBirdCollision[other.gameObject]) + 1;
             }
