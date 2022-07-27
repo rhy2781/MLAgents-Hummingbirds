@@ -76,21 +76,21 @@ public class HunterAgent : Agent
     /// <summary>
     /// Reset the agent when an episode begins
     /// </summary> 
-    public void ResetAgent()
-    {
-        // Zero out velocities so that movement stops before a new episode begins
-        rigidBody.velocity = Vector3.zero;
-        rigidBody.angularVelocity = Vector3.zero;
+    //public void ResetAgent()
+    //{
+    //    // Zero out velocities so that movement stops before a new episode begins
+    //    rigidBody.velocity = Vector3.zero;
+    //    rigidBody.angularVelocity = Vector3.zero;
 
-        // Default to spawning in front of a flower
-        bool inFrontOfFlower = true;
+    //    // Default to spawning in front of a flower
+    //    bool inFrontOfFlower = true;
 
-        eliminateCount = 0;
-        hummingBirdCollision = new Hashtable();
+    //    eliminateCount = 0;
+    //    hummingBirdCollision = new Hashtable();
 
-        // Move the agent to a new Position
-        MoveToSafeRandomPosition(inFrontOfFlower);
-    }
+    //    // Move the agent to a new Position
+    //    MoveToSafeRandomPosition(inFrontOfFlower);
+    //}
 
     /// OBSERVATIONS ===================================================================================================================================================
 

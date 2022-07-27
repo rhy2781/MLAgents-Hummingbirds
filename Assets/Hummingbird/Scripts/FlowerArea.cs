@@ -74,10 +74,10 @@ public class FlowerArea : MonoBehaviour
 
     public void ResetHunterAgents()
     {
-        foreach (HunterAgent hunter in hunters)
-        {
-            hunter.ResetAgent();
-        }
+        //foreach (HunterAgent hunter in hunters)
+        //{
+        //    hunter.ResetAgent();
+        //}
     }
 
     /// <summary>
