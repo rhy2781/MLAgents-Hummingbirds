@@ -331,8 +331,11 @@ public class HunterAgent : Agent
     /// </summary> 
     private void UpdateNearestHummingBird()
     {
-        nextHummingBird = flowerArea.HummingBirds[0];
-        
+        while(nextHummingBird == null )
+        {
+            nextHummingBird = flowerArea.HummingBirds[UnityEngine.Random.Range(0, flowerArea.HummingBirds.Count)];
+        }
+
         foreach (HummingBirdAgent potentialHummingBird in flowerArea.HummingBirds)
         {
             if (potentialHummingBird != null)
@@ -359,7 +362,7 @@ public class HunterAgent : Agent
     private void OnCollisionEnter(Collision other)
     {
         // Check if agent is colliding with nectar
-        if (other.gameObject.CompareTag("humming_bird"))
+        if (other.gameObject.CompareTag("humming_bird") && other.gameObject != null)
         {
             if (flowerArea.hummingBirdCollision.ContainsKey(other.gameObject))
             {
@@ -367,6 +370,7 @@ public class HunterAgent : Agent
                 if ((int)flowerArea.hummingBirdCollision[other.gameObject] == 10)
                 {
                     eliminateCount += 1;
+                    flowerArea.HummingBirds.Remove(other.gameObject.GetComponentInParent<HummingBirdAgent>());
                     Destroy(other.gameObject);
                     //other.gameObject.SetActive(false);
                     AddReward(.5f);
