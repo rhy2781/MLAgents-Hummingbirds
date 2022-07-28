@@ -334,7 +334,8 @@ public class HunterAgent : Agent
 
         foreach (HummingBirdAgent potentialHummingBird in flowerArea.HummingBirds)
         {
-            if (potentialHummingBird != null)
+            // TODO
+            if (potentialHummingBird.gameObject.activeSelf)
             {
                 float distanceToNextHummingBird = Vector3.Distance(nextHummingBird.beakTip.position, transform.position);
                 float distanceToPotentialHummingBird = Vector3.Distance(potentialHummingBird.beakTip.position, transform.position);
@@ -367,12 +368,16 @@ public class HunterAgent : Agent
                 if ((int)flowerArea.hummingBirdCollision[other.gameObject] == 10)
                 {
                     eliminateCount += 1;
-                    flowerArea.HummingBirds.Remove(other.gameObject.GetComponentInParent<HummingBirdAgent>());
-                    Destroy(other.gameObject);
-                    //other.gameObject.SetActive(false);
+                    //flowerArea.HummingBirds.Remove(other.gameObject.GetComponentInParent<HummingBirdAgent>());
+                    //Destroy(other.gameObject);
+
+                    other.gameObject.GetComponentInParent<HummingBirdAgent>().gameObject.SetActive(false);
+                    Debug.Log(other.gameObject.activeInHierarchy);
+
                     AddReward(.5f);
                     Debug.Log("Eliminated Bird : " + eliminateCount);
 
+                    nextHummingBird = null;
                     // find a new bird
                     UpdateNearestHummingBird();
                 }

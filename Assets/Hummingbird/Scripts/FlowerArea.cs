@@ -21,12 +21,6 @@ public class FlowerArea : MonoBehaviour
     // The hashtable containing a count of collisions with each humming bird
     public Hashtable hummingBirdCollision;
 
-    // The game object relating to humming bird prefab, used for reinstantiating during runtime
-    public GameObject birdInstatiate;
-
-    // The game object associated with the relative floating island
-    public GameObject floatingIsland;
-
     /// <summary>
     /// The list of all flowers in the area
     /// </summary>  
@@ -75,6 +69,8 @@ public class FlowerArea : MonoBehaviour
         //    HummingBirds.Add(created);
 
         //}
+        FindChildBirds(transform);
+
         foreach (HummingBirdAgent bird in HummingBirds)
         {
             bird.ResetBird();
