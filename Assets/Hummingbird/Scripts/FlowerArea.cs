@@ -29,7 +29,7 @@ public class FlowerArea : MonoBehaviour
     /// <summary>
     /// The list of all HummingBirds in the area
     /// </summary>  
-    public List<HummingBirdAgent> HummingBird
+    public List<HummingBirdAgent> HummingBirds
     {
         get;
         private set;
@@ -38,11 +38,14 @@ public class FlowerArea : MonoBehaviour
     /// <summary>
     /// The list of all Hunter Agents in the area
     /// </summary>  
-    public List<HunterAgent> hunters
+    public List<HunterAgent> Hunters
     {
         get;
         private set;
     }
+
+    // The hashtable containing a count of collisions with each humming bird
+    public Hashtable hummingBirdCollision;
 
     /// <summary>
     /// Reset the flowers and flower plants
@@ -66,12 +69,13 @@ public class FlowerArea : MonoBehaviour
 
     public void ResetHummingBirds()
     {
-        foreach(HummingBirdAgent bird in HummingBird)
+        foreach(HummingBirdAgent bird in HummingBirds)
         {
             bird.ResetBird();
         }
     }
 
+    // TODO
     public void ResetHunterAgents()
     {
         //foreach (HunterAgent hunter in hunters)
@@ -100,8 +104,10 @@ public class FlowerArea : MonoBehaviour
         flowerPlants = new List<GameObject>();
         nectarFlowerDictionary = new Dictionary<Collider, Flower>();
         Flowers = new List<Flower>();
-        HummingBird = new List<HummingBirdAgent>();
-        hunters = new List<HunterAgent>();
+        HummingBirds = new List<HummingBirdAgent>();
+        Hunters = new List<HunterAgent>();
+        hummingBirdCollision = new Hashtable();
+
     }
 
     /// <summary>
@@ -167,7 +173,7 @@ public class FlowerArea : MonoBehaviour
             Transform child = parent.GetChild(i);
             if(child.CompareTag("humming_bird"))
             {
-                HummingBird.Add(child.GetComponent<HummingBirdAgent>());
+                HummingBirds.Add(child.GetComponent<HummingBirdAgent>());
             }
         }
     }
@@ -184,7 +190,7 @@ public class FlowerArea : MonoBehaviour
             Transform child = parent.GetChild(i);
             if (child.CompareTag("hunter_agent"))
             {
-                hunters.Add(child.GetComponent<HunterAgent>());
+                Hunters.Add(child.GetComponent<HunterAgent>());
             }
         }
     }
