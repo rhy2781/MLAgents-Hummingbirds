@@ -71,7 +71,7 @@ public class HunterAgent : Agent
     /// <summary>
     /// Reset the agent when an episode begins
     /// </summary> 
-    public void ResetAgent()
+    public override void OnEpisodeBegin()
     {
         // Zero out velocities so that movement stops before a new episode begins
         rigidBody.velocity = Vector3.zero;

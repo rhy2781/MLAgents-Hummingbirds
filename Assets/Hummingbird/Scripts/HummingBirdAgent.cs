@@ -81,13 +81,12 @@ public class HummingBirdAgent : Agent
     /// </summary> 
     public override void OnEpisodeBegin()
     {
-        if (trainingMode)
-        {
-            // Only reset flowers in training when there is one agent per area
-            flowerArea.ResetFlowers();
-            flowerArea.ResetHummingBirds();
-            flowerArea.ResetHunterAgents();
-        }
+        
+        // Only reset flowers in training when there is one agent per area
+        flowerArea.ResetFlowers();
+        flowerArea.ResetHummingBirds();
+        //flowerArea.ResetHunterAgents();
+   
 
         // Reset the nectar Obtained
         NectarObtained = 0;
@@ -104,6 +103,7 @@ public class HummingBirdAgent : Agent
 
         // Recalculate the newest flower now that the agent has moved
         UpdateNearestFlower();
+        
     }
 
     /// <summary>
@@ -320,29 +320,7 @@ public class HummingBirdAgent : Agent
                 }
             }
         }
-
         nearestFlower = nextFlower;
-
-       
-        foreach(Flower flower in flowerArea.Flowers)
-        {
-            if(nearestFlower == null && flower.HasNectar) // no nearest flower
-            {
-                // no current nearest flower and this flower has nectar
-                nearestFlower = flower;
-            }
-
-            // Calculate distance to this flower and distance to the current nearest flower
-            float distanceToFlower = Vector3.Distance(flower.transform.position, beakTip.position);
-            float distanceToCurrentNearestFlower = Vector3.Distance(nearestFlower.transform.position, beakTip.position);
-
-            // If current nearest flower is empty of this flower is closer, update nearest flower
-
-            if (!nearestFlower.HasNectar || distanceToFlower < distanceToCurrentNearestFlower) // nearest flower has nectar
-            {
-                nearestFlower = flower;
-            }
-        }
     }
 
     /// <summary>

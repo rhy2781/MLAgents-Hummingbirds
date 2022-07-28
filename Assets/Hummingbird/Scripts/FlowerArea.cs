@@ -21,6 +21,12 @@ public class FlowerArea : MonoBehaviour
     // The hashtable containing a count of collisions with each humming bird
     public Hashtable hummingBirdCollision;
 
+    // The game object relating to humming bird prefab, used for reinstantiating during runtime
+    public GameObject birdInstatiate;
+
+    // The game object associated with the relative floating island
+    public GameObject floatingIsland;
+
     /// <summary>
     /// The list of all flowers in the area
     /// </summary>  
@@ -34,15 +40,6 @@ public class FlowerArea : MonoBehaviour
     /// The list of all HummingBirds in the area
     /// </summary>  
     public List<HummingBirdAgent> HummingBirds
-    {
-        get;
-        private set;
-    }
-
-    /// <summary>
-    /// The list of all Hunter Agents in the area
-    /// </summary>  
-    public List<HunterAgent> Hunters
     {
         get;
         private set;
@@ -72,21 +69,16 @@ public class FlowerArea : MonoBehaviour
     /// </summary>
     public void ResetHummingBirds()
     {
-        foreach(HummingBirdAgent bird in HummingBirds)
+        //while(HummingBirds.Count != 8)
+        //{
+        //    HummingBirdAgent created = Instantiate(birdInstatiate, floatingIsland.transform).gameObject.GetComponent<HummingBirdAgent>();
+        //    HummingBirds.Add(created);
+
+        //}
+        foreach (HummingBirdAgent bird in HummingBirds)
         {
             bird.ResetBird();
         }
-    }
-
-    /// <summary>
-    /// Reset the agents in the area
-    /// </summary>
-    public void ResetHunterAgents()
-    {
-        //foreach (HunterAgent hunter in Hunters)
-        //{
-        //    hunter.ResetAgent();
-        //}
     }
 
     /// <summary>
@@ -109,7 +101,6 @@ public class FlowerArea : MonoBehaviour
         nectarFlowerDictionary = new Dictionary<Collider, Flower>();
         Flowers = new List<Flower>();
         HummingBirds = new List<HummingBirdAgent>();
-        Hunters = new List<HunterAgent>();
         hummingBirdCollision = new Hashtable();
 
     }
@@ -122,7 +113,6 @@ public class FlowerArea : MonoBehaviour
         // Finds all flowers that are children of this GameObject/Transform
         FindChildFlowers(transform);
         FindChildBirds(transform);
-        FindChildHunters(transform);
     }
 
 
@@ -174,29 +164,10 @@ public class FlowerArea : MonoBehaviour
         for(int i = 0; i < parent.childCount; i++)
         {
             Transform child = parent.GetChild(i);
-            if(child.CompareTag("humming_bird"))
+            if (child.CompareTag("humming_bird") && !HummingBirds.Contains(child.GetComponent<HummingBirdAgent>()))
             {
                 HummingBirds.Add(child.GetComponent<HummingBirdAgent>());
             }
         }
     }
-
-
-    /// <summary>
-    /// Recursively finds all hunter agents that are children of a parent transform
-    /// <param name="parent">The parent of the children to check</param>
-    /// </summary>
-    private void FindChildHunters(Transform parent)
-    {
-        for (int i = 0; i < parent.childCount; i++)
-        {
-            Transform child = parent.GetChild(i);
-            if (!child.CompareTag("hunter_agent"))
-            {
-                continue;
-            }
-            Hunters.Add(child.GetComponent<HunterAgent>());
-        }
-    }
-
 }
