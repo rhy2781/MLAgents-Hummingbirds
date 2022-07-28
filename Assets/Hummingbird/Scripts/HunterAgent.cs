@@ -255,7 +255,7 @@ public class HunterAgent : Agent
             attemptsRemaining--;
 
             // Pick a random flower
-            HummingBirdAgent randomBird = flowerArea.HummingBirds[UnityEngine.Random.Range(0, flowerArea.HummingBirds.Count)];
+            HummingBirdAgent randomBird = flowerArea.HummingBirds[Random.Range(0, flowerArea.HummingBirds.Count)];
 
             // Position 10-20 cm in from of the flower
             potentialPosition = randomBird.transform.position + randomBird.beakTip.forward * -0.5f;
@@ -280,8 +280,7 @@ public class HunterAgent : Agent
         }
         Debug.Assert(safePositionFound, "Could not find a safe position to spawn");
 
-        transform.position = potentialPosition;
-        transform.rotation = potentialRotation;
+        transform.SetPositionAndRotation(potentialPosition, potentialRotation);
     }
 
     /// UPDATE MOTIONS ===========================================================================================================================
@@ -291,10 +290,10 @@ public class HunterAgent : Agent
     /// </summary>
     private void Update()
     {
-        UpdateNearestHummingBird();
-        // Draw a line from the center of the hunter to the nearest humming bird
-        if (nearestHummingBirdAgent != null)
+        if (flowerArea.HummingBirds.Count != 0)
         {
+            UpdateNearestHummingBird();
+            // Draw a line from the center of the hunter to the nearest humming bird
             Debug.DrawLine(rigidBody.position, nearestHummingBirdAgent.beakTip.position, Color.blue);
         }
     }
@@ -305,24 +304,21 @@ public class HunterAgent : Agent
     /// </summary>
     private void FixedUpdate()
     {
-        float previousDistance = distanceToBird;
-        
-        UpdateNearestHummingBird();
-        
-        if (previousDistance > distanceToBird) // if the movements that the bird made make the hunter closer to the bird
+        if (flowerArea.HummingBirds.Count != 0)
         {
-            AddReward(0.005f);
-        }
-        else
-        {
-            AddReward(-0.005f);
-        }
-        if (nearestHummingBirdAgent != null)
-        {
-            // avoids nearest scenario
+            float previousDistance = distanceToBird;
+            UpdateNearestHummingBird();
+            if (previousDistance > distanceToBird) // if the movements that the bird made make the hunter closer to the bird
+            {
+                AddReward(0.005f);
+            }
+            else
+            {
+                AddReward(-0.005f);
+            }
             Debug.DrawLine(rigidBody.position, nearestHummingBirdAgent.beakTip.position, Color.blue);
         }
-        
+
     }
    
 
@@ -331,7 +327,7 @@ public class HunterAgent : Agent
     /// </summary> 
     private void UpdateNearestHummingBird()
     {
-        while(nextHummingBird == null )
+        if(nextHummingBird == null )
         {
             nextHummingBird = flowerArea.HummingBirds[UnityEngine.Random.Range(0, flowerArea.HummingBirds.Count)];
         }
@@ -343,6 +339,7 @@ public class HunterAgent : Agent
                 float distanceToNextHummingBird = Vector3.Distance(nextHummingBird.beakTip.position, transform.position);
                 float distanceToPotentialHummingBird = Vector3.Distance(potentialHummingBird.beakTip.position, transform.position);
 
+                // The new distance to the Hummingbird is shorter than the old sitance
                 if (distanceToPotentialHummingBird < distanceToNextHummingBird)
                 {
                     nextHummingBird = potentialHummingBird;
@@ -351,7 +348,6 @@ public class HunterAgent : Agent
         }
         
         nearestHummingBirdAgent = nextHummingBird;
-        
         distanceToBird = Vector3.Distance(nearestHummingBirdAgent.beakTip.position, rigidBody.position);
     }
 
@@ -364,6 +360,7 @@ public class HunterAgent : Agent
         // Check if agent is colliding with nectar
         if (other.gameObject.CompareTag("humming_bird") && other.gameObject != null)
         {
+            // Check to make sure we can aces sinformation correctly
             if (flowerArea.hummingBirdCollision.ContainsKey(other.gameObject))
             {
                 // terminates the humming bird if 10 collisions occur
@@ -375,8 +372,11 @@ public class HunterAgent : Agent
                     //other.gameObject.SetActive(false);
                     AddReward(.5f);
                     Debug.Log("Eliminated Bird : " + eliminateCount);
+
+                    // find a new bird
                     UpdateNearestHummingBird();
                 }
+                // adds 1 to the collision count
                 else
                 {
                     flowerArea.hummingBirdCollision[other.gameObject] = (int)(flowerArea.hummingBirdCollision[other.gameObject]) + 1;
@@ -384,15 +384,16 @@ public class HunterAgent : Agent
             }
             else
             {
+                // if the bird is not in the collection, then we start to keep a counter for the object
                 flowerArea.hummingBirdCollision.Add(other.gameObject, 1);
             }
             Debug.Log("Collision with bird" + (int)flowerArea.hummingBirdCollision[other.gameObject]);
             AddReward(1f);           
         }
 
+        // Collided with the area boundary, give a negative reward
         if (other.gameObject.CompareTag("boundary"))
         {
-            // Collided with the area boundary, give a negative reward
             AddReward(-.5f);
         }
     }
