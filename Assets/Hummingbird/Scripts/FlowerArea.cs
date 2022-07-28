@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Manages a collection of flower plants and attached flowers
+/// Manages a collection of flower plants and attached flowers in addition
+/// to the hummingbirds and hunter drone agents that are in the area
 /// </summary>
 public class FlowerArea : MonoBehaviour
 {
@@ -16,6 +17,9 @@ public class FlowerArea : MonoBehaviour
 
     // A lookup dictionary for looking up a flower from a nectar collider
     private Dictionary<Collider, Flower> nectarFlowerDictionary;
+
+    // The hashtable containing a count of collisions with each humming bird
+    public Hashtable hummingBirdCollision;
 
     /// <summary>
     /// The list of all flowers in the area
@@ -44,11 +48,8 @@ public class FlowerArea : MonoBehaviour
         private set;
     }
 
-    // The hashtable containing a count of collisions with each humming bird
-    public Hashtable hummingBirdCollision;
-
     /// <summary>
-    /// Reset the flowers and flower plants
+    /// Reset the flowers and flower plants in the area
     /// </summary> 
     public void ResetFlowers(){
         // Rotate each flower plant around the Y axis and subtly around the X and Z
@@ -59,7 +60,6 @@ public class FlowerArea : MonoBehaviour
             float zRotation = UnityEngine.Random.Range(-5f, 5f);
             flowerPlant.transform.localRotation = Quaternion.Euler(xRotation, yRotation, zRotation);
         }
-
         // Reset each flower
         foreach(Flower flower in Flowers)
         {
@@ -67,6 +67,9 @@ public class FlowerArea : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Reset the humming birds in the area
+    /// </summary>
     public void ResetHummingBirds()
     {
         foreach(HummingBirdAgent bird in HummingBirds)
@@ -75,7 +78,9 @@ public class FlowerArea : MonoBehaviour
         }
     }
 
-    // TODO
+    /// <summary>
+    /// Reset the agents in the area
+    /// </summary>
     public void ResetHunterAgents()
     {
         //foreach (HunterAgent hunter in Hunters)
@@ -93,7 +98,6 @@ public class FlowerArea : MonoBehaviour
     {
         return nectarFlowerDictionary[collider];
     }
-
 
     /// <summary>
     /// Called when the area wakes up
@@ -142,8 +146,7 @@ public class FlowerArea : MonoBehaviour
             else
             {
                 // Not a flower plant, look for a flower component
-                Flower flower = child.GetComponent<Flower>();
-                if (flower != null)
+                if (child.TryGetComponent<Flower>(out var flower))
                 {
                     // found a flower, add it to teh flower's list
                     Flowers.Add(flower);
@@ -188,10 +191,11 @@ public class FlowerArea : MonoBehaviour
         for (int i = 0; i < parent.childCount; i++)
         {
             Transform child = parent.GetChild(i);
-            if (child.CompareTag("hunter_agent"))
+            if (!child.CompareTag("hunter_agent"))
             {
-                Hunters.Add(child.GetComponent<HunterAgent>());
+                continue;
             }
+            Hunters.Add(child.GetComponent<HunterAgent>());
         }
     }
 

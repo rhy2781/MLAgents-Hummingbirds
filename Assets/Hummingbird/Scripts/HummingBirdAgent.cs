@@ -1,10 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Unity.MLAgents;
 using Unity.MLAgents.Sensors;
 using Unity.MLAgents.Actuators;
-using static HunterAgent;
 
 /// <summary>
 /// A humming bird machine learning agent
@@ -60,7 +57,7 @@ public class HummingBirdAgent : Agent
     /// <summary>
     /// The amount of nectar this agent has obtained this episode
     /// </summary> x
-    public float nectarObtained
+    public float NectarObtained
     {
         get;
         private set;
@@ -93,7 +90,7 @@ public class HummingBirdAgent : Agent
         }
 
         // Reset the nectar Obtained
-        nectarObtained = 0;
+        NectarObtained = 0;
 
         // Zero out velocities so that movement stops before a new episode begins
         rigidBody.velocity = Vector3.zero;
@@ -129,7 +126,7 @@ public class HummingBirdAgent : Agent
         var continuousActions = vectorAction.ContinuousActions;
 
         // calculate movement vector
-        Vector3 move = new Vector3(continuousActions[0], continuousActions[1], continuousActions[2]);
+        Vector3 move = new(continuousActions[0], continuousActions[1], continuousActions[2]);
 
         // add force in the direction of the move vector
         rigidBody.AddForce(move * moveForce);
@@ -272,7 +269,7 @@ public class HummingBirdAgent : Agent
         bool safePositionFound = false;
         int attemptsRemaining = 100; // Prevents infinite loop
         Vector3 potentialPosition = Vector3.zero;
-        Quaternion potentialRotation = new Quaternion();
+        Quaternion potentialRotation = new();
 
         // loop until a safe position is found, or we run out of attempts
         while(!safePositionFound && attemptsRemaining > 0)
@@ -300,8 +297,7 @@ public class HummingBirdAgent : Agent
         }
         Debug.Assert(safePositionFound, "Could not find a safe position to spawn");
 
-        transform.position = potentialPosition;
-        transform.rotation = potentialRotation;
+        transform.SetPositionAndRotation(potentialPosition, potentialRotation);
     }
 
     /// <summary>
@@ -309,10 +305,11 @@ public class HummingBirdAgent : Agent
     /// </summary> 
     private void UpdateNearestFlower()
     {
+        // Choose the first flower in the area and iterate to see if there is a closer flower
         nextFlower = flowerArea.Flowers[0];
         foreach(Flower potentialFlower in flowerArea.Flowers)
         {
-            if (potentialFlower.hasNectar)
+            if (potentialFlower.HasNectar)
             {
                 float distanceToNextFlower = Vector3.Distance(nextFlower.transform.position, beakTip.position);
                 float distanceToPotentialFlower = Vector3.Distance(potentialFlower.transform.position, beakTip.position);
@@ -329,7 +326,7 @@ public class HummingBirdAgent : Agent
        
         foreach(Flower flower in flowerArea.Flowers)
         {
-            if(nearestFlower == null && flower.hasNectar) // no nearest flower
+            if(nearestFlower == null && flower.HasNectar) // no nearest flower
             {
                 // no current nearest flower and this flower has nectar
                 nearestFlower = flower;
@@ -341,7 +338,7 @@ public class HummingBirdAgent : Agent
 
             // If current nearest flower is empty of this flower is closer, update nearest flower
 
-            if (!nearestFlower.hasNectar || distanceToFlower < distanceToCurrentNearestFlower) // nearest flower has nectar
+            if (!nearestFlower.HasNectar || distanceToFlower < distanceToCurrentNearestFlower) // nearest flower has nectar
             {
                 nearestFlower = flower;
             }
@@ -390,7 +387,7 @@ public class HummingBirdAgent : Agent
                 float nectarReceived = flower.Feed(.01f);
 
                 // Keep track of nectar obtained
-                nectarObtained += nectarReceived;
+                NectarObtained += nectarReceived;
 
                 if(trainingMode)
                 {
@@ -399,7 +396,7 @@ public class HummingBirdAgent : Agent
                     AddReward(.1f + bonus);
 
                     // If flower is empty, update nearest flower
-                    if (!flower.hasNectar)
+                    if (!flower.HasNectar)
                     {
                         UpdateNearestFlower();
                     }
@@ -444,7 +441,7 @@ public class HummingBirdAgent : Agent
     /// </summary>
     private void FixedUpdate()
     {
-        if (nearestFlower != null && !nearestFlower.hasNectar)
+        if (nearestFlower != null && !nearestFlower.HasNectar)
         {
             // avoids nearest scenario where nearest flower nectar is stolen by opponent and not updated
             UpdateNearestFlower();

@@ -139,7 +139,7 @@ public class HunterAgent : Agent
         var continuousActions = vectorAction.ContinuousActions;
 
         // calculate movement vector
-        Vector3 move = new Vector3(continuousActions[0], continuousActions[1], continuousActions[2]);
+        Vector3 move = new(continuousActions[0], continuousActions[1], continuousActions[2]);
 
         // add force in the direction of the move vector
         rigidBody.AddForce(move * moveForce);
@@ -247,7 +247,7 @@ public class HunterAgent : Agent
         bool safePositionFound = false;
         int attemptsRemaining = 100; // Prevents infinite loop
         Vector3 potentialPosition = Vector3.zero;
-        Quaternion potentialRotation = new Quaternion();
+        Quaternion potentialRotation = new();
 
         // loop until a safe position is found, or we run out of attempts
         while (!safePositionFound && attemptsRemaining > 0)
@@ -261,8 +261,8 @@ public class HunterAgent : Agent
             potentialPosition = randomBird.transform.position + randomBird.beakTip.forward * -0.5f;
 
 
-            // Pick a random direction rotated around the y axis
-            Quaternion direction = Quaternion.Euler(0f, UnityEngine.Random.Range(-180f, 180f), 0);
+            //// Pick a random direction rotated around the y axis
+            //Quaternion direction = Quaternion.Euler(0f, UnityEngine.Random.Range(-180f, 180f), 0);
 
             // Choose and set random starting pitch and yaw
             float pitch = UnityEngine.Random.Range(-60f, 60f);
