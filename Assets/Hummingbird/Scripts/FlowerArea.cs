@@ -63,12 +63,6 @@ public class FlowerArea : MonoBehaviour
     /// </summary>
     public void ResetHummingBirds()
     {
-        //while(HummingBirds.Count != 8)
-        //{
-        //    HummingBirdAgent created = Instantiate(birdInstatiate, floatingIsland.transform).gameObject.GetComponent<HummingBirdAgent>();
-        //    HummingBirds.Add(created);
-
-        //}
         FindChildBirds(transform);
 
         foreach (HummingBirdAgent bird in HummingBirds)

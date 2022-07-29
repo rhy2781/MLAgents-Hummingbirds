@@ -166,6 +166,7 @@ MonoBehaviour:
   m_DetectableTags:
   - Untagged
   - boundary
+  - hunter_agent
   m_RaysPerDirection: 1
   m_MaxRayDegrees: 60
   m_SphereCastRadius: 0
@@ -423,6 +424,7 @@ MonoBehaviour:
   m_DetectableTags:
   - Untagged
   - boundary
+  - hunter_agent
   m_RaysPerDirection: 3
   m_MaxRayDegrees: 60
   m_SphereCastRadius: 0
@@ -566,6 +568,7 @@ MonoBehaviour:
   m_DetectableTags:
   - Untagged
   - boundary
+  - hunter_agent
   m_RaysPerDirection: 1
   m_MaxRayDegrees: 60
   m_SphereCastRadius: 0

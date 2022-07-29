@@ -54,6 +54,10 @@ public class HummingBirdAgent : Agent
     // observing the environment, but not taking any actions
     private bool frozen = false;
 
+    // The current distance from the nearest hunter
+    private float distanceFromHunter;
+    
+
     /// <summary>
     /// The amount of nectar this agent has obtained this episode
     /// </summary> x
