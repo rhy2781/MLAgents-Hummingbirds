@@ -335,7 +335,7 @@ public class HunterAgent : Agent
         foreach (HummingBirdAgent potentialHummingBird in flowerArea.HummingBirds)
         {
             // TODO
-            if (potentialHummingBird.gameObject.activeSelf)
+            if (potentialHummingBird.gameObject.activeInHierarchy)
             {
                 float distanceToNextHummingBird = Vector3.Distance(nextHummingBird.beakTip.position, transform.position);
                 float distanceToPotentialHummingBird = Vector3.Distance(potentialHummingBird.beakTip.position, transform.position);
@@ -372,7 +372,6 @@ public class HunterAgent : Agent
                     //Destroy(other.gameObject);
 
                     other.gameObject.GetComponentInParent<HummingBirdAgent>().gameObject.SetActive(false);
-                    Debug.Log(other.gameObject.activeInHierarchy);
 
                     AddReward(.5f);
                     Debug.Log("Eliminated Bird : " + eliminateCount);
