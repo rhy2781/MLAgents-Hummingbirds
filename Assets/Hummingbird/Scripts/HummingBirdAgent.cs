@@ -24,7 +24,7 @@ public class HummingBirdAgent : Agent
     public bool trainingMode;
 
     // The rigid body of the agent
-    private Rigidbody rigidBody;
+    public Rigidbody rigidBody;
 
     // The flower area that the agent is in 
     private FlowerArea flowerArea;
@@ -98,7 +98,6 @@ public class HummingBirdAgent : Agent
 
         // Recalculate the nearest flower now that the agent has moved
         UpdateNearestFlower();
-
         UpdateNearestHunter();
         
     }
@@ -158,9 +157,9 @@ public class HummingBirdAgent : Agent
     public override void CollectObservations(VectorSensor sensor)
     {
         // If nearest flower is null, observe an empty array and return early
-        if (nearestFlower == null)
+        if (nearestFlower == null || nearestHunterAgent == null)
         {
-            sensor.AddObservation(new float[10]);
+            sensor.AddObservation(new float[11]);
             return;
         }
 
@@ -184,7 +183,10 @@ public class HummingBirdAgent : Agent
         // Observe the relative distance from the beak tip to the flower(1 observation)
         sensor.AddObservation(toFlower.magnitude / FlowerArea.AreaDiameter); // ratio to the flower compared to total island diameter
 
-        // 10 total observations
+        Vector3 toNearestHunter = nearestHunterAgent.rigidBody.position - rigidBody.position;
+        sensor.AddObservation(toNearestHunter.magnitude / FlowerArea.AreaDiameter); // ratio of the distance to hunter to total island diameter
+
+        // 11 total observations
     }
 
     /// <summary>
@@ -273,10 +275,9 @@ public class HummingBirdAgent : Agent
         {
             attemptsRemaining --;
             // Pick a random flower
-            Flower randomFlower = flowerArea.Flowers[UnityEngine.Random.Range(0, flowerArea.Flowers.Count)];
+            Flower randomFlower = flowerArea.Flowers[Random.Range(0, flowerArea.Flowers.Count)];
 
-            // Position 10-20 cm in from of the flower
-            //float distanceFromFlower = UnityEngine.Random.Range(.1f, .2f); disabled
+            // Position 10 cm in front of the flower
             potentialPosition = randomFlower.transform.position + randomFlower.FlowerUpVector * .1f;
 
             // Point beak at flower(bird's head is center of transform)
@@ -291,7 +292,6 @@ public class HummingBirdAgent : Agent
             safePositionFound = colliders.Length == 0;
         }
         Debug.Assert(safePositionFound, "Could not find a safe position to spawn");
-
         transform.SetPositionAndRotation(potentialPosition, potentialRotation);
     }
 
@@ -318,6 +318,9 @@ public class HummingBirdAgent : Agent
         nearestFlower = nextFlower;
     }
 
+    /// <summary>
+    /// Update the nearest Hunter to the humming bird in case there is multiple hunters
+    /// </summary>
     private void UpdateNearestHunter()
     {
         if(nextHunterAgent == null)
@@ -411,13 +414,13 @@ public class HummingBirdAgent : Agent
         }
         if(collision.gameObject.CompareTag("hunter_agent"))
         {
-            // hunter attacked the humming bird
+            // hunter attacked the humming bird, and we want to encourage the bird to avoid the hunter
             AddReward(-.5f);
         }
     }
 
     /// <summary>
-    /// Called every frame
+    /// Called every frame. This methods helps provide us with debug information about what the hummingbirds knows
     /// </summary>
     private void Update()
     {
@@ -426,20 +429,36 @@ public class HummingBirdAgent : Agent
         {
             Debug.DrawLine(beakTip.position, nearestFlower.FlowerCenterPosition, Color.black);
         }
-
+        Debug.DrawLine(rigidBody.position, nearestHunterAgent.rigidBody.position, Color.yellow);
     }
 
     /// <summary>
     /// Called every .02 seconds
+    /// This method is used for anything that applies to the rigitbody movement, so when the agent takes action in response to the
+    /// locations of the hunter andnearest flower
     /// </summary>
     private void FixedUpdate()
     {
-        if (nearestFlower != null && !nearestFlower.HasNectar)
+        float previousDistance = distanceToHunter;
+        UpdateNearestHunter();
+        if (previousDistance > distanceToHunter) // if the movements that the bird made result in getting further away from the hunter
+        {
+            AddReward(0.005f);
+        }
+        else
+        {
+            AddReward(-0.005f);
+        }
+        if (nearestFlower != null || !nearestFlower.HasNectar)
         {
             // avoids nearest scenario where nearest flower nectar is stolen by opponent and not updated
             UpdateNearestFlower();
         }
     }
+
+    /// <summary>
+    /// This method is used to make sure that all the birds that were set to inactive are active again on the begining of a new episode
+    /// </summary>
     public void ResetBird()
     {
         gameObject.SetActive(true);

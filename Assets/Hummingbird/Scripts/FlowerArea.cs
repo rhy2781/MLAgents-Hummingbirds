@@ -55,9 +55,9 @@ public class FlowerArea : MonoBehaviour
         // Rotate each flower plant around the Y axis and subtly around the X and Z
         foreach (GameObject flowerPlant in flowerPlants)
         {
-            float xRotation = UnityEngine.Random.Range(-5f, 5f);
-            float yRotation = UnityEngine.Random.Range(-180f, 180f);
-            float zRotation = UnityEngine.Random.Range(-5f, 5f);
+            float xRotation = Random.Range(-5f, 5f);
+            float yRotation = Random.Range(-180f, 180f);
+            float zRotation = Random.Range(-5f, 5f);
             flowerPlant.transform.localRotation = Quaternion.Euler(xRotation, yRotation, zRotation);
         }
         // Reset each flower
@@ -156,7 +156,7 @@ public class FlowerArea : MonoBehaviour
 
 
     /// <summary>
-    /// Recursively finds all humming birds that are children of a parent transform
+    /// Find all humming birds that are children of the parent
     /// <param name="parent">The parent of the children to check</param>
     /// </summary>
     private void FindChildBirds(Transform parent)
@@ -170,6 +170,10 @@ public class FlowerArea : MonoBehaviour
             }
         }
     }
+    /// <summary>
+    /// Find all hunters that are children of the parent
+    /// </summary>
+    /// <param name="parent">The parent of the chilren to check</param>
     private void FindChildHunters(Transform parent)
     {
         for (int i = 0; i < parent.childCount; i++)

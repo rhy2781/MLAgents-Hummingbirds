@@ -383,6 +383,28 @@ MonoBehaviour:
   NumStepsToRecord: 0
   DemonstrationName: TrainingFile
   DemonstrationDirectory: Assets/Demonstrations
+--- !u!1 &81726633 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8298990830278903181, guid: 48e7a671205314799a07601d44539d0e,
+    type: 3}
+  m_PrefabInstance: {fileID: 1821588664}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &81726635
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 81726633}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2902496c0120472b90269f94a0aec7e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Record: 0
+  NumStepsToRecord: 10000
+  DemonstrationName: hunter behavior
+  DemonstrationDirectory: Assets/Demonstrations/hunter
 --- !u!1001 &92285162
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2194,7 +2216,7 @@ PrefabInstance:
     - target: {fileID: 6434798618752004301, guid: ee5d7605796823e44b0821e269dced5d,
         type: 3}
       propertyPath: m_RootOrder
-      value: 12
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 6434798618752004301, guid: ee5d7605796823e44b0821e269dced5d,
         type: 3}
@@ -3448,6 +3470,12 @@ MonoBehaviour:
   NumStepsToRecord: 0
   DemonstrationName: TrainingFile
   DemonstrationDirectory: Assets/Demonstrations
+--- !u!20 &869911930 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 7488056143608195124, guid: 48e7a671205314799a07601d44539d0e,
+    type: 3}
+  m_PrefabInstance: {fileID: 1821588664}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &882578674
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5978,7 +6006,7 @@ PrefabInstance:
     - target: {fileID: 6434798618752004301, guid: ee5d7605796823e44b0821e269dced5d,
         type: 3}
       propertyPath: m_RootOrder
-      value: 13
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 6434798618752004301, guid: ee5d7605796823e44b0821e269dced5d,
         type: 3}
@@ -6710,6 +6738,335 @@ MonoBehaviour:
   NumStepsToRecord: 0
   DemonstrationName: TrainingFile
   DemonstrationDirectory: Assets/Demonstrations
+--- !u!1001 &1821588664
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 92285163}
+    m_Modifications:
+    - target: {fileID: 446656431616206213, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 446656431616206213, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -3
+      objectReference: {fileID: 0}
+    - target: {fileID: 446656431616206213, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.8319
+      objectReference: {fileID: 0}
+    - target: {fileID: 446656431616206213, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.51000005
+      objectReference: {fileID: 0}
+    - target: {fileID: 446656431616206213, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 446656431616206213, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 446656431616206213, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 446656431616206213, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 446656431616206213, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 446656431616206213, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 446656431616206213, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 546281053477648713, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_MaxRayDegrees
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 546281053477648713, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_RaysPerDirection
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 546281053477648713, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_DetectableTags.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 546281053477648713, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_DetectableTags.Array.data[0]
+      value: boun
+      objectReference: {fileID: 0}
+    - target: {fileID: 899273051883604346, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: TakeActionsBetweenDecisions
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1426952374475131511, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_Name
+      value: HunterRayUp
+      objectReference: {fileID: 0}
+    - target: {fileID: 1600493696373661110, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_Name
+      value: HunterRaySlant
+      objectReference: {fileID: 0}
+    - target: {fileID: 2037372825186118984, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: MaxStep
+      value: 5000
+      objectReference: {fileID: 0}
+    - target: {fileID: 2037372825186118984, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: moveForce
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2037372825186118984, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: agentCamera
+      value: 
+      objectReference: {fileID: 869911930}
+    - target: {fileID: 2137510689518950126, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_SensorName
+      value: HunterRayDown
+      objectReference: {fileID: 0}
+    - target: {fileID: 2137510689518950126, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_MaxRayDegrees
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2137510689518950126, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_RaysPerDirection
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2137510689518950126, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_DetectableTags.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2137510689518950126, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_DetectableTags.Array.data[2]
+      value: humming_bird
+      objectReference: {fileID: 0}
+    - target: {fileID: 2611148851952102323, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2611148851952102323, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2611148851952102323, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2611148851952102323, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 2611148851952102323, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 2611148851952102323, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2611148851952102323, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2611148851952102323, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 3093403712603244859, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_Layer
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3093403712603244859, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5069784712898030816, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_SensorName
+      value: HunterRaySlant
+      objectReference: {fileID: 0}
+    - target: {fileID: 5069784712898030816, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_MaxRayDegrees
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 5069784712898030816, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_DetectableTags.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5069784712898030816, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_DetectableTags.Array.data[0]
+      value: Untagged
+      objectReference: {fileID: 0}
+    - target: {fileID: 5069784712898030816, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_DetectableTags.Array.data[1]
+      value: boundary
+      objectReference: {fileID: 0}
+    - target: {fileID: 5069784712898030816, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_DetectableTags.Array.data[2]
+      value: humming_bird
+      objectReference: {fileID: 0}
+    - target: {fileID: 5363187423396493891, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: TeamId
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5363187423396493891, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_BehaviorName
+      value: Hunter
+      objectReference: {fileID: 0}
+    - target: {fileID: 5363187423396493891, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_BehaviorType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5363187423396493891, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_BrainParameters.VectorObservationSize
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 5363187423396493891, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_BrainParameters.VectorActionSize.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5363187423396493891, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_BrainParameters.m_ActionSpec.m_NumContinuousActions
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6395772288859576289, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_Name
+      value: HunterRayDown
+      objectReference: {fileID: 0}
+    - target: {fileID: 7380965080723271581, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7380965080723271581, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7380965080723271581, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7488056143608195124, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_Depth
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7488056143608195124, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_TargetDisplay
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7563808266074306678, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_Drag
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7563808266074306678, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_Mass
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7563808266074306678, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_AngularDrag
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7817835754936676677, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8298990830278903181, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_Name
+      value: Hunter (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 8298990830278903181, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8298990830278903181, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_TagString
+      value: hunter_agent
+      objectReference: {fileID: 0}
+    - target: {fileID: 8449310090658084911, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_SensorName
+      value: HunterRayUp
+      objectReference: {fileID: 0}
+    - target: {fileID: 8449310090658084911, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_DetectableTags.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8449310090658084911, guid: 48e7a671205314799a07601d44539d0e,
+        type: 3}
+      propertyPath: m_DetectableTags.Array.data[2]
+      value: humming_bird
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 48e7a671205314799a07601d44539d0e, type: 3}
 --- !u!1001 &1943338434
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8213,7 +8570,7 @@ PrefabInstance:
     - target: {fileID: 446656431616206213, guid: 48e7a671205314799a07601d44539d0e,
         type: 3}
       propertyPath: m_RootOrder
-      value: 11
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 446656431616206213, guid: 48e7a671205314799a07601d44539d0e,
         type: 3}

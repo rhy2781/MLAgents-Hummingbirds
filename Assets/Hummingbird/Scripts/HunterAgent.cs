@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
@@ -25,7 +23,7 @@ public class HunterAgent : Agent
     public bool trainingMode;
 
     // The rigid body of the agent
-    private Rigidbody rigidBody;
+    public Rigidbody rigidBody;
 
     // The flower area that the agent is in 
     private FlowerArea flowerArea;
@@ -239,7 +237,7 @@ public class HunterAgent : Agent
 
     /// <summary>
     /// Move the agent into a safe random posotion i.e. does not collide anything 
-    /// If also in front of flower, point in front of flower
+    /// Pick a random bird and then set the hunter behind the bird
     /// </summary>
     ///
     private void MoveToSafeRandomPosition()
@@ -254,15 +252,11 @@ public class HunterAgent : Agent
         {
             attemptsRemaining--;
 
-            // Pick a random flower
+            // Pick a random bird
             HummingBirdAgent randomBird = flowerArea.HummingBirds[Random.Range(0, flowerArea.HummingBirds.Count)];
 
-            // Position 10-20 cm in from of the flower
+            // Position 50 cm behind the bird
             potentialPosition = randomBird.transform.position + randomBird.beakTip.forward * -0.5f;
-
-
-            //// Pick a random direction rotated around the y axis
-            //Quaternion direction = Quaternion.Euler(0f, UnityEngine.Random.Range(-180f, 180f), 0);
 
             // Choose and set random starting pitch and yaw
             float pitch = UnityEngine.Random.Range(-60f, 60f);
@@ -274,7 +268,7 @@ public class HunterAgent : Agent
             // Check to see if the agent will collide with anything
             Collider[] colliders = Physics.OverlapSphere(potentialPosition, 0.1f);
 
-            // Sage position has been found is no colliders have overlapped
+            // Safe position has been found is no colliders have overlapped
             safePositionFound = colliders.Length == 0;
             
         }
@@ -292,9 +286,8 @@ public class HunterAgent : Agent
     {
         if (flowerArea.HummingBirds.Count != 0)
         {
-            UpdateNearestHummingBird();
             // Draw a line from the center of the hunter to the nearest humming bird
-            Debug.DrawLine(rigidBody.position, nearestHummingBirdAgent.beakTip.position, Color.blue);
+            Debug.DrawLine(rigidBody.position, nearestHummingBirdAgent.rigidBody.position, Color.blue);
         }
     }
 
@@ -304,6 +297,7 @@ public class HunterAgent : Agent
     /// </summary>
     private void FixedUpdate()
     {
+        // if there are still birds in the area
         if (flowerArea.HummingBirds.Count != 0)
         {
             float previousDistance = distanceToBird;
@@ -316,7 +310,6 @@ public class HunterAgent : Agent
             {
                 AddReward(-0.005f);
             }
-            Debug.DrawLine(rigidBody.position, nearestHummingBirdAgent.beakTip.position, Color.blue);
         }
 
     }
@@ -329,15 +322,15 @@ public class HunterAgent : Agent
     {
         if(nextHummingBird == null || nextHummingBird.gameObject.activeInHierarchy == false)
         {
-            nextHummingBird = flowerArea.HummingBirds[UnityEngine.Random.Range(0, flowerArea.HummingBirds.Count)];
+            nextHummingBird = flowerArea.HummingBirds[Random.Range(0, flowerArea.HummingBirds.Count)];
         }
 
         foreach (HummingBirdAgent potentialHummingBird in flowerArea.HummingBirds)
         {
             if (potentialHummingBird.gameObject.activeInHierarchy)
             {
-                float distanceToNextHummingBird = Vector3.Distance(nextHummingBird.beakTip.position, transform.position);
-                float distanceToPotentialHummingBird = Vector3.Distance(potentialHummingBird.beakTip.position, transform.position);
+                float distanceToNextHummingBird = Vector3.Distance(nextHummingBird.rigidBody.position, transform.position);
+                float distanceToPotentialHummingBird = Vector3.Distance(potentialHummingBird.rigidBody.position, transform.position);
 
                 // The new distance to the Hummingbird is shorter than the old sitance
                 if (distanceToPotentialHummingBird < distanceToNextHummingBird)
@@ -348,7 +341,7 @@ public class HunterAgent : Agent
         }
         
         nearestHummingBirdAgent = nextHummingBird;
-        distanceToBird = Vector3.Distance(nearestHummingBirdAgent.beakTip.position, rigidBody.position);
+        distanceToBird = Vector3.Distance(nearestHummingBirdAgent.rigidBody.position, rigidBody.position);
     }
 
     /// <summary>
