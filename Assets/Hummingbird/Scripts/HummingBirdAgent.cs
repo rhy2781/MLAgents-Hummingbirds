@@ -20,9 +20,6 @@ public class HummingBirdAgent : Agent
     [Tooltip("Transform at the tip of the beak")]
     public Transform beakTip;
 
-    [Tooltip("The agent's Camera")]
-    public Camera agentCamera;
-
     [Tooltip("Whether this is training mode or Gameplay mode")]
     public bool trainingMode;
 
@@ -34,9 +31,6 @@ public class HummingBirdAgent : Agent
 
     // The nearest flower to the agent
     private Flower nearestFlower;
-
-    // The next flower that the agent will fly to
-    private Flower nextFlower;
 
     // Allows for smoother pitch changes
     private float smoothPitchChange = 0f;
@@ -55,7 +49,9 @@ public class HummingBirdAgent : Agent
     private bool frozen = false;
 
     // The current distance from the nearest hunter
-    private float distanceFromHunter;
+    private HunterAgent nearestHunterAgent;
+    private HunterAgent nextHunterAgent;
+    private float distanceToHunter;
     
 
     /// <summary>
@@ -89,8 +85,6 @@ public class HummingBirdAgent : Agent
         // Only reset flowers in training when there is one agent per area
         flowerArea.ResetFlowers();
         flowerArea.ResetHummingBirds();
-        //flowerArea.ResetHunterAgents();
-   
 
         // Reset the nectar Obtained
         NectarObtained = 0;
@@ -99,14 +93,13 @@ public class HummingBirdAgent : Agent
         rigidBody.velocity = Vector3.zero;
         rigidBody.angularVelocity = Vector3.zero;
 
-        // Default to spawning in front of a flower
-        bool inFrontOfFlower = true;
-
         // Move the agent to a new Position
-        MoveToSafeRandomPosition(inFrontOfFlower);
+        MoveToSafeRandomPosition();
 
-        // Recalculate the newest flower now that the agent has moved
+        // Recalculate the nearest flower now that the agent has moved
         UpdateNearestFlower();
+
+        UpdateNearestHunter();
         
     }
 
@@ -268,7 +261,7 @@ public class HummingBirdAgent : Agent
     /// Move the agent into a safe random posotion i.e. does not collide anything 
     /// If also in front of flower, point the beak in front of the flower
     /// </summary> 
-    private void MoveToSafeRandomPosition(bool inFrontOfFlower)
+    private void MoveToSafeRandomPosition()
     {
         bool safePositionFound = false;
         int attemptsRemaining = 100; // Prevents infinite loop
@@ -279,19 +272,17 @@ public class HummingBirdAgent : Agent
         while(!safePositionFound && attemptsRemaining > 0)
         {
             attemptsRemaining --;
-            if(inFrontOfFlower)
-            {
-                // Pick a random flower
-                Flower randomFlower = flowerArea.Flowers[UnityEngine.Random.Range(0, flowerArea.Flowers.Count)];
+            // Pick a random flower
+            Flower randomFlower = flowerArea.Flowers[UnityEngine.Random.Range(0, flowerArea.Flowers.Count)];
 
-                // Position 10-20 cm in from of the flower
-                //float distanceFromFlower = UnityEngine.Random.Range(.1f, .2f); disabled
-                potentialPosition = randomFlower.transform.position + randomFlower.FlowerUpVector * .1f;
+            // Position 10-20 cm in from of the flower
+            //float distanceFromFlower = UnityEngine.Random.Range(.1f, .2f); disabled
+            potentialPosition = randomFlower.transform.position + randomFlower.FlowerUpVector * .1f;
 
-                // Point beak at flower(bird's head is center of transform)
-                Vector3 toFlower = randomFlower.FlowerCenterPosition - potentialPosition;
-                potentialRotation = Quaternion.LookRotation(toFlower, Vector3.up); 
-            }
+            // Point beak at flower(bird's head is center of transform)
+            Vector3 toFlower = randomFlower.FlowerCenterPosition - potentialPosition;
+            potentialRotation = Quaternion.LookRotation(toFlower, Vector3.up); 
+           
 
             // Check to see if the agent will collide with anything
             Collider[] colliders = Physics.OverlapSphere(potentialPosition, 0.05f);
@@ -310,7 +301,7 @@ public class HummingBirdAgent : Agent
     private void UpdateNearestFlower()
     {
         // Choose the first flower in the area and iterate to see if there is a closer flower
-        nextFlower = flowerArea.Flowers[0];
+        Flower nextFlower = flowerArea.Flowers[0];
         foreach(Flower potentialFlower in flowerArea.Flowers)
         {
             if (potentialFlower.HasNectar)
@@ -325,6 +316,26 @@ public class HummingBirdAgent : Agent
             }
         }
         nearestFlower = nextFlower;
+    }
+
+    private void UpdateNearestHunter()
+    {
+        if(nextHunterAgent == null)
+        {
+            nextHunterAgent = flowerArea.Hunters[Random.Range(0, flowerArea.Hunters.Count)];
+        }
+        foreach(HunterAgent potentialHunterAgent in flowerArea.Hunters)
+        {
+            float distanceToNextHunter = Vector3.Distance(nextHunterAgent.rigidBody.position, transform.position);
+            float distanceToPotentialHunter = Vector3.Distance(potentialHunterAgent.rigidBody.position, transform.position);
+
+            if(distanceToPotentialHunter < distanceToNextHunter)
+            {
+                nextHunterAgent = potentialHunterAgent;
+            }
+        }
+        nearestHunterAgent = nextHunterAgent;
+        distanceToHunter = Vector3.Distance(nearestHunterAgent.rigidBody.position, rigidBody.position);
     }
 
     /// <summary>

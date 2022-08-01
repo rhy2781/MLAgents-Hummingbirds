@@ -81,7 +81,7 @@ public class HunterAgent : Agent
         eliminateCount = 0;
 
         // Move the agent to a new Position
-        MoveToSafeRandomPosition(true);
+        MoveToSafeRandomPosition();
     }
 
     /// OBSERVATIONS ===================================================================================================================================================
@@ -242,7 +242,7 @@ public class HunterAgent : Agent
     /// If also in front of flower, point in front of flower
     /// </summary>
     ///
-    private void MoveToSafeRandomPosition(bool inFrontOfHummingBird)
+    private void MoveToSafeRandomPosition()
     {
         bool safePositionFound = false;
         int attemptsRemaining = 100; // Prevents infinite loop
@@ -360,7 +360,7 @@ public class HunterAgent : Agent
         // Check if agent is colliding with nectar
         if (other.gameObject.CompareTag("humming_bird") && other.gameObject != null)
         {
-            // Check to make sure we can aces sinformation correctly
+            // Check to see if we have already had a collision with this game object
             if (flowerArea.hummingBirdCollision.ContainsKey(other.gameObject))
             {
                 // terminates the humming bird if 10 collisions occur
@@ -369,17 +369,17 @@ public class HunterAgent : Agent
                     eliminateCount += 1;
                     other.gameObject.GetComponentInParent<HummingBirdAgent>().gameObject.SetActive(false);
 
+                    nextHummingBird = null;
                     AddReward(.5f);
                     Debug.Log(gameObject + "Eliminated Bird : " + eliminateCount);
-                    nextHummingBird = null;
 
                     // find a new bird
                     UpdateNearestHummingBird();
                 }
-                // adds 1 to the collision count
+                // adds 1 to the collision count if we already have a record of collisions and it has not been greater than 10
                 else
                 {
-                    flowerArea.hummingBirdCollision[other.gameObject] = (int)(flowerArea.hummingBirdCollision[other.gameObject]) + 1;
+                    flowerArea.hummingBirdCollision[other.gameObject] = (int)flowerArea.hummingBirdCollision[other.gameObject] + 1;
                 }
             }
             else
@@ -395,7 +395,5 @@ public class HunterAgent : Agent
         {
             AddReward(-.5f);
         }
-        UpdateNearestHummingBird();
-
     }
 }
