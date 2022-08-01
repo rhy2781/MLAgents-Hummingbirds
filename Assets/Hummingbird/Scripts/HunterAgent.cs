@@ -327,7 +327,7 @@ public class HunterAgent : Agent
     /// </summary> 
     private void UpdateNearestHummingBird()
     {
-        if(nextHummingBird == null )
+        if(nextHummingBird == null || nextHummingBird.gameObject.activeInHierarchy == false)
         {
             nextHummingBird = flowerArea.HummingBirds[UnityEngine.Random.Range(0, flowerArea.HummingBirds.Count)];
         }
@@ -395,5 +395,7 @@ public class HunterAgent : Agent
         {
             AddReward(-.5f);
         }
+        UpdateNearestHummingBird();
+
     }
 }
