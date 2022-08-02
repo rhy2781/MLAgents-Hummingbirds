@@ -1226,6 +1226,7 @@ MonoBehaviour:
   yawSpeed: 100
   agentCamera: {fileID: 7488056143608195124}
   trainingMode: 1
+  rigidBody: {fileID: 0}
   eliminateCount: 0
 --- !u!114 &5363187423396493891
 MonoBehaviour:

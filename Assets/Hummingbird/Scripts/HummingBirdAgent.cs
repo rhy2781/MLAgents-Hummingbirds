@@ -52,7 +52,6 @@ public class HummingBirdAgent : Agent
     private HunterAgent nearestHunterAgent;
     private HunterAgent nextHunterAgent;
     private float distanceToHunter;
-    
 
     /// <summary>
     /// The amount of nectar this agent has obtained this episode
@@ -323,6 +322,15 @@ public class HummingBirdAgent : Agent
     /// </summary>
     private void UpdateNearestHunter()
     {
+        // if we only have one hunter in the area
+        if(flowerArea.Hunters.Count == 1)
+        {
+            nearestHunterAgent = flowerArea.Hunters[0];
+            distanceToHunter = Vector3.Distance(nearestHunterAgent.rigidBody.position, rigidBody.position);
+            return;
+        }
+
+        // if we have multiple hunters in the area
         if(nextHunterAgent == null)
         {
             nextHunterAgent = flowerArea.Hunters[Random.Range(0, flowerArea.Hunters.Count)];
@@ -439,17 +447,9 @@ public class HummingBirdAgent : Agent
     /// </summary>
     private void FixedUpdate()
     {
-        float previousDistance = distanceToHunter;
         UpdateNearestHunter();
-        if (previousDistance > distanceToHunter) // if the movements that the bird made result in getting further away from the hunter
-        {
-            AddReward(0.005f);
-        }
-        else
-        {
-            AddReward(-0.005f);
-        }
-        if (nearestFlower != null || !nearestFlower.HasNectar)
+
+        if (nearestFlower == null || !nearestFlower.HasNectar)
         {
             // avoids nearest scenario where nearest flower nectar is stolen by opponent and not updated
             UpdateNearestFlower();

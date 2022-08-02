@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.MLAgents;
 using UnityEngine;
 
 /// <summary>
@@ -20,6 +21,7 @@ public class FlowerArea : MonoBehaviour
 
     // The hashtable containing a count of collisions with each humming bird
     public Hashtable hummingBirdCollision;
+    public SimpleMultiAgentGroup mAgentGroup;
 
     /// <summary>
     /// The list of all flowers in the area
@@ -72,8 +74,6 @@ public class FlowerArea : MonoBehaviour
     /// </summary>
     public void ResetHummingBirds()
     {
-        FindChildBirds(transform);
-
         foreach (HummingBirdAgent bird in HummingBirds)
         {
             bird.ResetBird();
@@ -109,6 +109,7 @@ public class FlowerArea : MonoBehaviour
     /// </summary> 
     private void Start() 
     {
+        mAgentGroup = new SimpleMultiAgentGroup();
         // Finds all flowers that are children of this GameObject/Transform
         FindChildFlowers(transform);
         FindChildBirds(transform);

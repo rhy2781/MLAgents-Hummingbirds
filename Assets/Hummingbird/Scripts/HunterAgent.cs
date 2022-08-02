@@ -52,6 +52,7 @@ public class HunterAgent : Agent
     // The current distance to the nearest bird
     private float  distanceToBird;
 
+
     /// INITIALIZE ===================================================================================================================================================
 
     /// <summary>
@@ -287,11 +288,12 @@ public class HunterAgent : Agent
         if (flowerArea.HummingBirds.Count != 0)
         {
             // Draw a line from the center of the hunter to the nearest humming bird
-            Debug.DrawLine(rigidBody.position, nearestHummingBirdAgent.rigidBody.position, Color.blue);
+            Debug.DrawLine(rigidBody.position, nearestHummingBirdAgent.beakTip.position, Color.blue);
         }
+
     }
 
-    
+
     /// <summary>
     /// Called every .02 seconds
     /// </summary>
@@ -309,6 +311,15 @@ public class HunterAgent : Agent
             else
             {
                 AddReward(-0.005f);
+            }
+        }
+        if(eliminateCount == flowerArea.HummingBirds.Count)
+        {
+            eliminateCount = 0;
+            foreach(HummingBirdAgent bird in flowerArea.HummingBirds)
+            {
+                flowerArea.hummingBirdCollision[bird.GetComponentInChildren<Collider>().gameObject] = 0;
+                bird.gameObject.SetActive(true);
             }
         }
 
@@ -350,43 +361,44 @@ public class HunterAgent : Agent
     /// <param name="other">The trigger collider</param>
     private void OnCollisionEnter(Collision other)
     {
-        // Check if agent is colliding with nectar
-        if (other.gameObject.CompareTag("humming_bird") && other.gameObject != null)
+        // Make sure that the object we are looking at is not null, and active
+        if(other.gameObject != null && other.gameObject.activeInHierarchy)
         {
-            // Check to see if we have already had a collision with this game object
-            if (flowerArea.hummingBirdCollision.ContainsKey(other.gameObject))
+            // check to see if we collided with a bird and we have a record of it
+            if(other.gameObject.CompareTag("humming_bird") && flowerArea.hummingBirdCollision.ContainsKey(other.gameObject))
             {
-                // terminates the humming bird if 10 collisions occur
-                if ((int)flowerArea.hummingBirdCollision[other.gameObject] == 10)
+                AddReward(1f);
+                // if we have collided with this bird 10 times, then terminate the bird
+                if((int)flowerArea.hummingBirdCollision[other.gameObject] == 10)
                 {
-                    eliminateCount += 1;
+                    eliminateCount++;
+                    // need to call parent object as the collider is the one triggering the event
                     other.gameObject.GetComponentInParent<HummingBirdAgent>().gameObject.SetActive(false);
-
                     nextHummingBird = null;
-                    AddReward(.5f);
+                    // add a bonus reward
+                    AddReward(0.5f);
                     Debug.Log(gameObject + "Eliminated Bird : " + eliminateCount);
 
                     // find a new bird
                     UpdateNearestHummingBird();
                 }
-                // adds 1 to the collision count if we already have a record of collisions and it has not been greater than 10
+                // increment count if we have record, and count does not equal 10
                 else
                 {
                     flowerArea.hummingBirdCollision[other.gameObject] = (int)flowerArea.hummingBirdCollision[other.gameObject] + 1;
                 }
+                Debug.Log("Bird Collision: " + flowerArea.hummingBirdCollision[other.gameObject]);
             }
-            else
+            // set the count to one if we have not encountered this before;
+            else if(other.gameObject.CompareTag("humming_bird"))
             {
-                // if the bird is not in the collection, then we start to keep a counter for the object
                 flowerArea.hummingBirdCollision.Add(other.gameObject, 1);
             }
-            AddReward(1f);           
         }
-
-        // Collided with the area boundary, give a negative reward
-        if (other.gameObject.CompareTag("boundary"))
+        // Collided with boundary, give negative reward
+        if (other.gameObject.CompareTag("boundary") && other.gameObject != null)
         {
             AddReward(-.5f);
-        }
+        }   
     }
 }
