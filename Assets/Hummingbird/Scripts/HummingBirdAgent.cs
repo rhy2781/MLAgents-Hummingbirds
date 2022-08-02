@@ -69,37 +69,8 @@ public class HummingBirdAgent : Agent
     {
         rigidBody = GetComponent<Rigidbody>();
         flowerArea = GetComponentInParent<FlowerArea>();
-
-        // If not training mode, no max step, play forever
-        if (!trainingMode) MaxStep = 0;
     }
 
-
-    /// <summary>
-    /// Reset the agent when an episode begins
-    /// </summary> 
-    public override void OnEpisodeBegin()
-    {
-        
-        // Only reset flowers in training when there is one agent per area
-        flowerArea.ResetFlowers();
-        flowerArea.ResetHummingBirds();
-
-        // Reset the nectar Obtained
-        NectarObtained = 0;
-
-        // Zero out velocities so that movement stops before a new episode begins
-        rigidBody.velocity = Vector3.zero;
-        rigidBody.angularVelocity = Vector3.zero;
-
-        // Move the agent to a new Position
-        MoveToSafeRandomPosition();
-
-        // Recalculate the nearest flower now that the agent has moved
-        UpdateNearestFlower();
-        UpdateNearestHunter();
-        
-    }
 
     /// <summary>
     /// Called when an action is received from either the player or the neural network
@@ -393,17 +364,14 @@ public class HummingBirdAgent : Agent
                 // Keep track of nectar obtained
                 NectarObtained += nectarReceived;
 
-                if(trainingMode)
-                {
-                    // Calculate the reward for getting nectar
-                    float bonus = .2f * Mathf.Clamp01(Vector3.Dot(transform.forward.normalized, -nearestFlower.FlowerUpVector.normalized));
-                    AddReward(.1f + bonus);
+                // Add rewards for the group
+                float bonus = Mathf.Clamp01(Vector3.Dot(transform.forward.normalized, -nearestFlower.FlowerUpVector.normalized));
+                flowerArea.mAgentGroupBird.AddGroupReward(0.01f + bonus);
 
-                    // If flower is empty, update nearest flower
-                    if (!flower.HasNectar)
-                    {
-                        UpdateNearestFlower();
-                    }
+                // If flower is empty, update nearest flower
+                if (!flower.HasNectar)
+                {
+                    UpdateNearestFlower();
                 }
             }
         }
@@ -415,15 +383,15 @@ public class HummingBirdAgent : Agent
     /// <param name="collision">The collision info</param>
     private void OnCollisionEnter(Collision collision)
     {
-        if(trainingMode && collision.collider.CompareTag("boundary"))
+        if(collision.collider.CompareTag("boundary"))
         {
-            // Collided with the area boundary, give a negative reward
-            AddReward(-.5f);
+            // want ot encourage the bird to not hit any borders
+            flowerArea.mAgentGroupBird.AddGroupReward(-0.05f);
         }
-        if(collision.gameObject.CompareTag("hunter_agent"))
+        else if(collision.gameObject.CompareTag("hunter_agent"))
         {
             // hunter attacked the humming bird, and we want to encourage the bird to avoid the hunter
-            AddReward(-.5f);
+            flowerArea.mAgentGroupBird.AddGroupReward(-0.05f);
         }
     }
 
@@ -435,14 +403,14 @@ public class HummingBirdAgent : Agent
         // Draw a line from the beak tip to the nearest flower
         if(nearestFlower != null)
         {
-            Debug.DrawLine(beakTip.position, nearestFlower.FlowerCenterPosition, Color.black);
+            Debug.DrawLine(beakTip.position, nearestFlower.FlowerCenterPosition, Color.red);
         }
         Debug.DrawLine(rigidBody.position, nearestHunterAgent.rigidBody.position, Color.yellow);
     }
 
     /// <summary>
     /// Called every .02 seconds
-    /// This method is used for anything that applies to the rigitbody movement, so when the agent takes action in response to the
+    /// This method is used for anything that applies to the rigidbody movement, so when the agent takes action in response to the
     /// locations of the hunter andnearest flower
     /// </summary>
     private void FixedUpdate()
@@ -462,5 +430,14 @@ public class HummingBirdAgent : Agent
     public void ResetBird()
     {
         gameObject.SetActive(true);
+        NectarObtained = 0;
+
+        rigidBody.velocity = Vector3.zero;
+        rigidBody.angularVelocity = Vector3.zero;
+
+        // move bird and update nearest flower and hunter so that the bird is aware of its new location
+        MoveToSafeRandomPosition();
+        UpdateNearestFlower();
+        UpdateNearestHunter();
     }
 }

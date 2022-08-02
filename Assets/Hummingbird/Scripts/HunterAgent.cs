@@ -285,7 +285,7 @@ public class HunterAgent : Agent
     /// </summary>
     private void Update()
     {
-        if (flowerArea.HummingBirds.Count != 0)
+        if (flowerArea.HummingBirds != null)
         {
             // Draw a line from the center of the hunter to the nearest humming bird
             Debug.DrawLine(rigidBody.position, nearestHummingBirdAgent.beakTip.position, Color.blue);
@@ -306,11 +306,11 @@ public class HunterAgent : Agent
             UpdateNearestHummingBird();
             if (previousDistance > distanceToBird) // if the movements that the bird made make the hunter closer to the bird
             {
-                AddReward(0.005f);
+                flowerArea.mAgentGroupHunter.AddGroupReward(0.005f);
             }
             else
             {
-                AddReward(-0.005f);
+                flowerArea.mAgentGroupHunter.AddGroupReward(-0.005f);
             }
         }
         if(eliminateCount == flowerArea.HummingBirds.Count)
@@ -367,7 +367,7 @@ public class HunterAgent : Agent
             // check to see if we collided with a bird and we have a record of it
             if(other.gameObject.CompareTag("humming_bird") && flowerArea.hummingBirdCollision.ContainsKey(other.gameObject))
             {
-                AddReward(1f);
+                AddReward(0.1f);
                 // if we have collided with this bird 10 times, then terminate the bird
                 if((int)flowerArea.hummingBirdCollision[other.gameObject] == 10)
                 {
@@ -376,7 +376,7 @@ public class HunterAgent : Agent
                     other.gameObject.GetComponentInParent<HummingBirdAgent>().gameObject.SetActive(false);
                     nextHummingBird = null;
                     // add a bonus reward
-                    AddReward(0.5f);
+                    AddReward(0.05f);
                     Debug.Log(gameObject + "Eliminated Bird : " + eliminateCount);
 
                     // find a new bird
@@ -398,7 +398,11 @@ public class HunterAgent : Agent
         // Collided with boundary, give negative reward
         if (other.gameObject.CompareTag("boundary") && other.gameObject != null)
         {
-            AddReward(-.5f);
+            AddReward(-.05f);
         }   
+    }
+    public void ResetHunter()
+    {
+
     }
 }

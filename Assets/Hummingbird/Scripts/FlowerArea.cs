@@ -6,6 +6,8 @@ using UnityEngine;
 /// <summary>
 /// Manages a collection of flower plants and attached flowers in addition
 /// to the hummingbirds and hunter drone agents that are in the area
+///
+/// This class acts as the controller in the environment
 /// </summary>
 public class FlowerArea : MonoBehaviour
 {
@@ -21,7 +23,10 @@ public class FlowerArea : MonoBehaviour
 
     // The hashtable containing a count of collisions with each humming bird
     public Hashtable hummingBirdCollision;
-    public SimpleMultiAgentGroup mAgentGroup;
+
+    // The multi agent group for the hummingbirds
+    public SimpleMultiAgentGroup mAgentGroupBird;
+    public SimpleMultiAgentGroup mAgentGroupHunter;
 
     /// <summary>
     /// The list of all flowers in the area
@@ -49,6 +54,78 @@ public class FlowerArea : MonoBehaviour
         get;
         private set;
     }
+
+    /// <summary>
+    /// Max Academy steps before this platform resets
+    /// </summary>
+    /// <returns></returns>
+    [Header("Max Environment Steps")] public int MaxEnvironmentSteps = 25000;
+    private int m_ResetTimer;
+
+    // ========================================================================
+
+    /// <summary>
+    /// Called when the game starts
+    /// </summary> 
+    private void Start()
+    {
+        mAgentGroupBird = new SimpleMultiAgentGroup();
+        mAgentGroupHunter = new SimpleMultiAgentGroup();
+        // Finds all flower, bird, and hunter children of the floating island transform
+        FindChildFlowers(transform);
+        FindChildBirds(transform);
+        FindChildHunters(transform);
+
+        // register all birds within the group
+        foreach(HummingBirdAgent bird in HummingBirds)
+        {
+            mAgentGroupBird.RegisterAgent(bird);
+        }
+        // register all hunters within the group 
+        foreach(HunterAgent hunter in Hunters)
+        {
+            mAgentGroupHunter.RegisterAgent(hunter);
+        }
+    }
+
+    /// <summary>
+    /// Called when the area wakes up
+    /// </summary> 
+    private void Awake()
+    {
+        // Initialize variables 
+        flowerPlants = new List<GameObject>();
+        nectarFlowerDictionary = new Dictionary<Collider, Flower>();
+        Flowers = new List<Flower>();
+        HummingBirds = new List<HummingBirdAgent>();
+        Hunters = new List<HunterAgent>();
+        hummingBirdCollision = new Hashtable();
+    }
+
+    /// <summary>
+    /// Reset the agent when an episode begins
+    /// </summary> 
+    public void OnEpisodeBegin()
+    {
+        // Reset the flower birds and hunters in the area
+        ResetFlowers();
+        ResetHummingBirds();
+        ResetHunters();
+    }
+
+    // Update is called once per frame
+    void FixedUpdate()
+    {
+        m_ResetTimer += 1;
+        if (m_ResetTimer >= MaxEnvironmentSteps && MaxEnvironmentSteps > 0)
+        {
+            mAgentGroupBird.GroupEpisodeInterrupted();
+            mAgentGroupHunter.GroupEpisodeInterrupted();
+            OnEpisodeBegin();
+        }
+    }
+
+    // ========================================================================
 
     /// <summary>
     /// Reset the flowers and flower plants in the area
@@ -81,6 +158,17 @@ public class FlowerArea : MonoBehaviour
     }
 
     /// <summary>
+    /// Reset the hunters in the area
+    /// </summary>
+    public void ResetHunters()
+    {
+        foreach (HunterAgent hunter in Hunters)
+        {
+            hunter.ResetHunter();
+        }
+    }
+
+    /// <summary>
     /// Gets the <see cref="Flower"/> that the nectar belongs to
     /// <param name="collider">The Nectar Collider</param>
     /// <return>The matching flower</return>
@@ -89,33 +177,6 @@ public class FlowerArea : MonoBehaviour
     {
         return nectarFlowerDictionary[collider];
     }
-
-    /// <summary>
-    /// Called when the area wakes up
-    /// </summary> 
-    private void Awake() 
-    {
-        // Initialize variables 
-        flowerPlants = new List<GameObject>();
-        nectarFlowerDictionary = new Dictionary<Collider, Flower>();
-        Flowers = new List<Flower>();
-        HummingBirds = new List<HummingBirdAgent>();
-        Hunters = new List<HunterAgent>();
-        hummingBirdCollision = new Hashtable();
-    }
-
-    /// <summary>
-    /// Called when the game starts
-    /// </summary> 
-    private void Start() 
-    {
-        mAgentGroup = new SimpleMultiAgentGroup();
-        // Finds all flowers that are children of this GameObject/Transform
-        FindChildFlowers(transform);
-        FindChildBirds(transform);
-        FindChildHunters(transform);
-    }
-
 
     /// <summary>
     /// Recursively finds all flowers and flower plants that are children of a parent transform
