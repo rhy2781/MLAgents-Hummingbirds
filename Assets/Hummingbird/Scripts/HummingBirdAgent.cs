@@ -51,6 +51,7 @@ public class HummingBirdAgent : Agent
     // The current distance from the nearest hunter
     private HunterAgent nearestHunterAgent;
     private HunterAgent nextHunterAgent;
+    private float distanceToFlower;
     private float distanceToHunter;
 
     /// <summary>
@@ -286,6 +287,7 @@ public class HummingBirdAgent : Agent
             }
         }
         nearestFlower = nextFlower;
+        distanceToFlower = Vector3.Distance(nearestFlower.FlowerCenterPosition, rigidBody.position);
     }
 
     /// <summary>
@@ -359,14 +361,14 @@ public class HummingBirdAgent : Agent
 
                 // Attempt to take .01 nectar
                 // Note: this is per fixed timestep, meaning it happens every .02 seconds, or 50x per second
-                float nectarReceived = flower.Feed(.01f);
+                float nectarReceived = flower.Feed(.1f);
 
                 // Keep track of nectar obtained
                 NectarObtained += nectarReceived;
 
-                // Add rewards for the group
+                // Add rewards for this specific hummingbird
                 float bonus = Mathf.Clamp01(Vector3.Dot(transform.forward.normalized, -nearestFlower.FlowerUpVector.normalized));
-                flowerArea.mAgentGroupBird.AddGroupReward(0.01f + bonus);
+                AddReward(0.1f + bonus / 10);
 
                 // If flower is empty, update nearest flower
                 if (!flower.HasNectar)
@@ -385,13 +387,13 @@ public class HummingBirdAgent : Agent
     {
         if(collision.collider.CompareTag("boundary"))
         {
-            // want ot encourage the bird to not hit any borders
-            flowerArea.mAgentGroupBird.AddGroupReward(-0.05f);
+            // want to encourage the bird to not hit any borders
+            AddReward(-0.005f);
         }
         else if(collision.gameObject.CompareTag("hunter_agent"))
         {
             // hunter attacked the humming bird, and we want to encourage the bird to avoid the hunter
-            flowerArea.mAgentGroupBird.AddGroupReward(-0.05f);
+            AddReward(-0.005f);
         }
     }
 
@@ -415,13 +417,28 @@ public class HummingBirdAgent : Agent
     /// </summary>
     private void FixedUpdate()
     {
-        UpdateNearestHunter();
-
-        if (nearestFlower == null || !nearestFlower.HasNectar)
+        float previousDistance = distanceToFlower;
+        UpdateNearestFlower();
+        if (previousDistance > distanceToFlower) // if the movements that the bird resulted in getting close to the hunter
         {
-            // avoids nearest scenario where nearest flower nectar is stolen by opponent and not updated
-            UpdateNearestFlower();
+            AddReward(0.0001f);
+        }else // if the movements that the bird made move the bird closer to the flower
+        {
+            AddReward(-0.0001f);
         }
+
+        previousDistance = distanceToHunter;
+        UpdateNearestHunter();
+        if (previousDistance > distanceToFlower) // if the movements that the bird made move the bird closer to the hunter
+        {
+            AddReward(-0.0001f);
+        }
+        else // if the movements that the bird made move the bird farther from the hunter
+        {
+            AddReward(0.0001f);
+        }
+
+
     }
 
     /// <summary>

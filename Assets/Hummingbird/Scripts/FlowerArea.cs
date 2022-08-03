@@ -28,6 +28,8 @@ public class FlowerArea : MonoBehaviour
     public SimpleMultiAgentGroup mAgentGroupBird;
     public SimpleMultiAgentGroup mAgentGroupHunter;
 
+    public int eliminatedCount;
+
     /// <summary>
     /// The list of all flowers in the area
     /// </summary>  
@@ -75,17 +77,20 @@ public class FlowerArea : MonoBehaviour
         FindChildFlowers(transform);
         FindChildBirds(transform);
         FindChildHunters(transform);
+        eliminatedCount = 0;
 
         // register all birds within the group
         foreach(HummingBirdAgent bird in HummingBirds)
         {
             mAgentGroupBird.RegisterAgent(bird);
         }
+
         // register all hunters within the group 
         foreach(HunterAgent hunter in Hunters)
         {
             mAgentGroupHunter.RegisterAgent(hunter);
         }
+        ResetScene();
     }
 
     /// <summary>
@@ -105,26 +110,63 @@ public class FlowerArea : MonoBehaviour
     /// <summary>
     /// Reset the agent when an episode begins
     /// </summary> 
-    public void OnEpisodeBegin()
+    public void ResetScene()
     {
         // Reset the flower birds and hunters in the area
         ResetFlowers();
         ResetHummingBirds();
         ResetHunters();
+        eliminatedCount = 0;
+        hummingBirdCollision.Clear();
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
         m_ResetTimer += 1;
+
+        if (m_ResetTimer == MaxEnvironmentSteps || eliminatedCount == HummingBirds.Count)
+        {
+            EndGame();
+        }
+
         if (m_ResetTimer >= MaxEnvironmentSteps && MaxEnvironmentSteps > 0)
         {
             mAgentGroupBird.GroupEpisodeInterrupted();
             mAgentGroupHunter.GroupEpisodeInterrupted();
-            OnEpisodeBegin();
+            ResetScene();
+            m_ResetTimer = 0;
         }
+
     }
 
+    public void EndGame()
+    {
+        Debug.Log("Reset with " + eliminatedCount + " birds eliminated");
+
+        // if the hunter has eliminated more than 3/4 of birds then hunter wins
+        if (eliminatedCount > (HummingBirds.Count * 0.75))
+        {
+            /// the quicker the episode, the better the reward
+            Debug.Log("Hunters awarded with : " + (1 - (float)m_ResetTimer / MaxEnvironmentSteps));
+            Debug.Log("Birds awarded with : " +  -1);
+            mAgentGroupHunter.AddGroupReward(1 - ((float)m_ResetTimer / MaxEnvironmentSteps));
+            mAgentGroupBird.AddGroupReward(-1);
+        }
+        // if more than 1/4 of the birds survive
+        else
+        {
+            Debug.Log("Birds awarded with : " + 1);
+            Debug.Log("Hunters awarded with : " + -1);
+
+            mAgentGroupHunter.AddGroupReward(1);
+            mAgentGroupBird.AddGroupReward(0.5f);
+        }
+        // end group episode for agents
+        mAgentGroupBird.EndGroupEpisode();
+        mAgentGroupHunter.EndGroupEpisode();
+        ResetScene();
+    }
     // ========================================================================
 
     /// <summary>
